@@ -1,0 +1,15 @@
+[project]
+name = "nastranioconvert"
+version = "0.1.0"
+description = "Nastran modal displacement scaling and visualization app"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.4.3",
+    "pandas>=2.3.3",
+    "plotly>=6.6.0",
+    "streamlit>=1.55.0",
+]
+
+[project.scripts]
+nastranioconvert = "nastranioconvert.ui.streamlit_app:main"
