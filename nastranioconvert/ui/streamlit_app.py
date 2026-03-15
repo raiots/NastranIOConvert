@@ -1,15 +1,19 @@
 from __future__ import annotations
 
+import os
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 
 from nastranioconvert.parsers import parse_bdf_text, parse_modal_text, parse_mode_scales, parse_mode_weights
 from nastranioconvert.services import estimate_mode_strain
+from nastranioconvert.ui.debug_panel import render_overlay_debug
 from nastranioconvert.utils.io import load_text_input, to_csv_bytes, to_dat_bytes, to_mode_zip_bytes
 from nastranioconvert.visualization import fig_combined_deformed_3d, fig_deformed_overlay_3d, fig_structure_3d
 
 GITHUB_REPO_URL = "https://github.com/raiots/NastranIOConvert"
+APP_ENV = os.getenv("APP_ENV", "prod").strip().lower()
 
 
 def main() -> None:
@@ -101,14 +105,21 @@ def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, m
 
     modes = summary_df["mode"].tolist()
     mode_pick = st.selectbox("查看某个模态的变形叠加图", options=modes, index=0)
-    eta = float(mode_weights.get(mode_pick, 1.0))
+    mode_key = str(mode_pick).strip()
     scaled_for_overlay = scaled_df.copy()
-    mask = scaled_for_overlay["mode"] == mode_pick
+    scaled_for_overlay["mode"] = scaled_for_overlay["mode"].astype(str).str.strip()
+    eta = float(mode_weights.get(mode_pick, mode_weights.get(mode_key, 1.0)))
+    mask = scaled_for_overlay["mode"] == mode_key
     scaled_for_overlay.loc[mask, ["ux", "uy", "uz"]] *= eta
+    debug_overlay = st.checkbox("显示 Overlay 调试信息（临时）", value=False) if APP_ENV in {"dev", "debug"} else False
     v3, v4 = st.columns(2)
     with v3:
-        st.caption(f"当前模态权重 eta({mode_pick}) = {eta:.6g}，Overlay 显示已乘权重后的位移。")
-        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_for_overlay, mode_pick), use_container_width=True)
+        if not mask.any():
+            st.warning(f"Overlay 未匹配到 mode={mode_key} 的数据，请打开调试信息查看。")
+        st.caption(f"当前模态权重 eta({mode_key}) = {eta:.6g}，Overlay 显示已乘权重后的位移。")
+        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_for_overlay, mode_key), use_container_width=True)
+        if debug_overlay:
+            render_overlay_debug(model.grids, scaled_for_overlay, mask, mode_pick, mode_key)
     with v4:
         st.plotly_chart(fig_combined_deformed_3d(model.grids, combined_df), use_container_width=True)
 
