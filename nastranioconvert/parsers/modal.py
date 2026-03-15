@@ -99,11 +99,23 @@ def parse_modal_text(text: str, filename_hint: str = "") -> ModalData:
 
 
 def parse_mode_weights(raw: str, modes: Iterable[str]) -> Dict[str, float]:
+    return parse_mode_values(raw, modes, default=1.0)
+
+
+def parse_mode_scales(raw: str, modes: Iterable[str]) -> Dict[str, float]:
+    return parse_mode_values(raw, modes, default=1.0)
+
+
+def parse_mode_values(raw: str, modes: Iterable[str], default: float = 1.0) -> Dict[str, float]:
     mode_list = list(modes)
-    result = {mode: 1.0 for mode in mode_list}
+    result = {mode: default for mode in mode_list}
     raw = raw.strip()
     if not raw:
         return result
+
+    if "," not in raw and "=" not in raw and ":" not in raw:
+        value = float(raw)
+        return {mode: value for mode in mode_list}
 
     if "=" not in raw and ":" not in raw:
         vals = [v.strip() for v in raw.split(",") if v.strip()]
