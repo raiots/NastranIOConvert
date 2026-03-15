@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-from nastranioconvert.parsers import parse_bdf_text, parse_modal_text, parse_mode_weights
+from nastranioconvert.parsers import parse_bdf_text, parse_modal_text, parse_mode_scales, parse_mode_weights
 from nastranioconvert.services import estimate_mode_strain
 from nastranioconvert.utils.io import load_text_input, to_csv_bytes, to_dat_bytes, to_mode_zip_bytes
 from nastranioconvert.visualization import fig_combined_deformed_3d, fig_deformed_overlay_3d, fig_structure_3d
@@ -16,9 +16,9 @@ def main() -> None:
     st.set_page_config(page_title="Nastran 模态变形转换工具", layout="wide")
     _render_brand_header()
     st.title("Nastran 模态变形转换工具")
-    st.caption("流程：BDF/结果导入 -> 位移转应变(边轴向估计) -> 应变约束放大 -> 可视化与导出")
+    st.caption("流程：BDF/结果导入 -> 位移转应变(Bu=ε) -> 应变放大 -> 最小二乘反算位移 -> 可视化与导出")
 
-    bdf_text, modal_text, modal_name, epsilon_allow, eta_raw = _render_inputs()
+    bdf_text, modal_text, modal_name, scale_raw, eta_raw = _render_inputs()
     if not bdf_text.strip() or not modal_text.strip():
         st.info("请提供 BDF 和模态位移数据（上传或粘贴均可）。")
         st.stop()
@@ -28,15 +28,16 @@ def main() -> None:
         modal = parse_modal_text(modal_text, modal_name)
         mode_order = list(pd.unique(modal.displacements["mode"]))
         mode_weights = parse_mode_weights(eta_raw, mode_order)
+        mode_scales = parse_mode_scales(scale_raw, mode_order)
         summary_df, scaled_df, edge_strain_df, combined_df = estimate_mode_strain(
             model,
             modal.displacements,
-            epsilon_allow,
             mode_weights,
+            mode_scales,
         )
 
     st.success("自动处理完成。")
-    _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df)
+    _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights)
 
 
 def _render_brand_header() -> None:
@@ -71,16 +72,16 @@ def _render_inputs():
     st.markdown("### 2) 参数")
     p1, p2 = st.columns([1, 2])
     with p1:
-        epsilon_allow = st.number_input("允许最大应变 epsilon_allow", min_value=1e-8, value=0.002, step=0.0001, format="%.6f")
+        scale_raw = st.text_input("模态放大倍数 scale", value="1.0", help="例: 2.5 或 1.0,0.8 或 Mode1=2.0,Mode2=1.2")
     with p2:
         eta_raw = st.text_input("模态权重 eta (可选)", value="", help="例: 1.0,0.8 或 Mode1=1.0,Mode2=0.6")
 
     bdf_text, _ = load_text_input(bdf_upload, bdf_paste)
     modal_text, modal_name = load_text_input(modal_upload, modal_paste)
-    return bdf_text, modal_text, modal_name, epsilon_allow, eta_raw
+    return bdf_text, modal_text, modal_name, scale_raw, eta_raw
 
 
-def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df) -> None:
+def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights) -> None:
     st.markdown("### 3) 过程可视化")
     k1, k2, k3 = st.columns(3)
     k1.metric("BDF节点数", f"{len(model.grids):,}")
@@ -100,9 +101,14 @@ def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df) -
 
     modes = summary_df["mode"].tolist()
     mode_pick = st.selectbox("查看某个模态的变形叠加图", options=modes, index=0)
+    eta = float(mode_weights.get(mode_pick, 1.0))
+    scaled_for_overlay = scaled_df.copy()
+    mask = scaled_for_overlay["mode"] == mode_pick
+    scaled_for_overlay.loc[mask, ["ux", "uy", "uz"]] *= eta
     v3, v4 = st.columns(2)
     with v3:
-        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_df, mode_pick), use_container_width=True)
+        st.caption(f"当前模态权重 eta({mode_pick}) = {eta:.6g}，Overlay 显示已乘权重后的位移。")
+        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_for_overlay, mode_pick), use_container_width=True)
     with v4:
         st.plotly_chart(fig_combined_deformed_3d(model.grids, combined_df), use_container_width=True)
 
@@ -115,4 +121,4 @@ def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df) -
     st.download_button("下载 combined_deformed.dat", to_dat_bytes(combined_df[["node_id", "ux", "uy", "uz"]]), "combined_deformed.dat", "text/plain")
     st.download_button("下载各模态结果 ZIP", to_mode_zip_bytes(scaled_df), "mode_deformed_outputs.zip", "application/zip")
 
-    st.caption("说明：应变计算采用基于结构边方向的轴向应变估算，用于快速调试与倍率建议。")
+    st.caption("说明：应变计算基于结构边局部三方向分量（拉伸/面内/面外），用于快速调试与倍率建议。")
