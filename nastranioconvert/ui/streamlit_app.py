@@ -8,6 +8,7 @@ import streamlit as st
 
 from nastranioconvert.parsers import parse_bdf_text, parse_modal_text, parse_mode_scales, parse_mode_weights
 from nastranioconvert.services import estimate_mode_strain
+from nastranioconvert.ui.default_case import get_default_case_texts
 from nastranioconvert.ui.debug_panel import render_overlay_debug
 from nastranioconvert.utils.io import load_text_input, to_csv_bytes, to_dat_bytes, to_mode_zip_bytes
 from nastranioconvert.visualization import fig_combined_deformed_3d, fig_deformed_overlay_3d, fig_structure_3d
@@ -55,13 +56,19 @@ def _render_brand_header() -> None:
 
 
 def _render_inputs():
+    default_bdf, default_modal = get_default_case_texts()
     st.markdown("### 1) 输入")
     col1, col2 = st.columns(2)
 
     with col1:
         st.subheader("结构模型(BDF)")
         bdf_upload = st.file_uploader("上传 BDF 文件", type=["bdf", "dat", "txt"], key="bdf_uploader")
-        bdf_paste = st.text_area("或粘贴 BDF 文本", height=220, value="", placeholder="粘贴 GRID/CBAR 等卡片...")
+        bdf_paste = st.text_area(
+            "或粘贴 BDF 文本",
+            height=220,
+            value=default_bdf,
+            placeholder="粘贴 GRID/CBAR 等卡片...",
+        )
 
     with col2:
         st.subheader("模态位移")
@@ -69,7 +76,7 @@ def _render_inputs():
         modal_paste = st.text_area(
             "或粘贴位移文本",
             height=220,
-            value="",
+            value=default_modal,
             placeholder="CSV: node_id,ux,uy,uz[,mode] 或 F06 位移表文本",
         )
 
