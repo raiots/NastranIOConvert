@@ -6,6 +6,9 @@
 
 其中 `B` 由结构边局部坐标构建，`u_scaled` 通过最小二乘反算，最终再按 `eta` 做模态组合。
 
+在线 Demo：  
+[NastranIOConvert Streamlit App](https://nastranioconvert-kxr5eivbce3fzvbboie7g4.streamlit.app/)
+
 ## 1. 概览
 
 项目用途：
@@ -101,6 +104,9 @@ uv sync
 ```bash
 uv run streamlit run modal_strain_scaler_app.py
 ```
+
+在线体验：  
+[NastranIOConvert Streamlit App](https://nastranioconvert-kxr5eivbce3fzvbboie7g4.streamlit.app/)
 
 可选：
 
