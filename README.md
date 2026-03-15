@@ -1,166 +1,150 @@
 # NastranIOConvert
 
-`NastranIOConvert` 是一个面向结构模态后处理的小工具：
-给定结构模型（BDF）和模态位移（CSV/F06），在应变上限约束下自动计算每个模态的建议放大倍率，并生成加权组合变形场与可视化结果。
+`NastranIOConvert` 是一个用于模态位移后处理的小工具。它按以下链路计算大变形场：
 
-## 1. 首页（Overview）
+`u -> epsilon (= B u) -> epsilon_scaled -> u_scaled (least squares)`
 
-这个工具解决的是一个很常见的问题：
-原始模态位移幅值通常很小，直接看不直观；但盲目放大又可能超过可接受应变。
+其中 `B` 由结构边局部坐标构建，`u_scaled` 通过最小二乘反算，最终再按 `eta` 做模态组合。
 
-本项目通过“应变约束 + 自动缩放”的方式，让你可以：
+## 1. 概览
 
-- 从 BDF 中读取节点与结构连边（CBAR）
-- 从 CSV/F06 中读取多模态位移
-- 按允许应变 `epsilon_allow` 自动估算每个模态放大系数
-- 按权重 `eta` 叠加各模态，得到组合位移场
-- 在 Streamlit 页面中完成 3D 预览、统计与结果导出
+项目用途：
 
----
-
-## 2. How It Works（核心算法与步骤）
-
-这一部分是项目核心：把位移场映射到结构边的轴向应变，并反推安全放大倍率。
-
-### 2.1 输入与符号定义
-
-设：
-
-- 节点集合为 $\mathcal{N}$，节点 $i$ 的原始坐标为 $\mathbf{x}_i=[x_i,y_i,z_i]^T$
-- 结构边集合为 $\mathcal{E}$，边 $(i,j)\in\mathcal{E}$
-- 第 $m$ 个模态在节点 $i$ 的位移为 $\mathbf{u}_i^{(m)}=[u_{x},u_{y},u_{z}]^T$
-- 用户给定允许最大应变 $\varepsilon_{allow}>0$
-- 模态权重为 $\eta_m$
-
-边长和单位方向向量：
-
-$$
-L_{ij}=\|\mathbf{x}_j-\mathbf{x}_i\|_2,
-\qquad
-\mathbf{n}_{ij}=\frac{\mathbf{x}_j-\mathbf{x}_i}{L_{ij}}
-$$
-
-### 2.2 单模态轴向应变估计
-
-对每个模态 $m$、每条边 $(i,j)$：
-
-1. 计算相对位移
-$$
-\Delta\mathbf{u}_{ij}^{(m)}=\mathbf{u}_j^{(m)}-\mathbf{u}_i^{(m)}
-$$
-
-2. 投影到边方向并除以边长，得到轴向应变近似
-$$
-\varepsilon_{ij}^{(m)} \approx \frac{\Delta\mathbf{u}_{ij}^{(m)}\cdot\mathbf{n}_{ij}}{L_{ij}}
-$$
-
-这是小变形线性近似下沿杆轴方向的应变估计，适合快速评估和放大建议。
-
-### 2.3 模态放大系数求解
-
-对每个模态，先取最大绝对应变：
-$$
-\varepsilon_{max}^{(m)}=\max_{(i,j)\in\mathcal{E}}\left|\varepsilon_{ij}^{(m)}\right|
-$$
-
-建议放大系数：
-$$
-\alpha_m=
-\begin{cases}
-\dfrac{\varepsilon_{allow}}{\varepsilon_{max}^{(m)}}, & \varepsilon_{max}^{(m)}>0 \\
-1, & \varepsilon_{max}^{(m)}=0
-\end{cases}
-$$
-
-缩放后的模态位移：
-$$
-\tilde{\mathbf{u}}_i^{(m)}=\alpha_m\,\mathbf{u}_i^{(m)}
-$$
-
-### 2.4 多模态加权组合
-
-最终组合位移场：
-$$
-\mathbf{u}_i^{comb}=\sum_m \eta_m\,\tilde{\mathbf{u}}_i^{(m)}
-$$
-
-组合位移幅值：
-$$
-\|\mathbf{u}_i^{comb}\|_2=\sqrt{u_{x,i}^2+u_{y,i}^2+u_{z,i}^2}
-$$
-
-该量用于着色显示和导出结果中的 `disp_mag`。
-
-### 2.5 关键实现细节
-
-- 若同一模态下 `(mode, node_id)` 出现重复位移记录，先做均值聚合。
-- 若 BDF 中无 CBAR，程序会基于节点坐标构建 k 近邻补边（默认 `k=2`）用于应变估计。
-- F06 与 CSV 会自动识别；CSV 支持 `node_id/nid/grid/id` 和 `ux,uy,uz` 同义列。
-
-### 2.6 算法流程（可对应代码）
-
-1. 解析 BDF，得到 `grids` 与 `edges`。
-2. 解析位移文件，得到每个模态的 `(node_id, ux, uy, uz)`。
-3. 对每个模态：
-   1) 对重复节点位移聚合；
-   2) 逐边计算 $\varepsilon_{ij}^{(m)}$；
-   3) 求 $\alpha_m$ 并缩放该模态位移；
-   4) 记录统计量（最大应变、最大位移、节点数等）。
-4. 用权重 $\eta_m$ 对缩放后模态叠加，得到组合场。
-5. 输出 `summary`、`combined`、`per-mode zip` 并绘图。
+- 读取 BDF（节点 + 结构边）
+- 读取位移模态（CSV/F06）
+- 在应变空间按输入放大倍数 `scale` 缩放
+- 反算位移得到放大后的模态位移场
+- 按权重 `eta` 组合多模态并导出
 
 ---
 
-## 3. Usage
+## 2. How It Works
 
-### 3.1 Installation（安装）
+### 2.1 输入符号
 
-推荐使用 `uv`：
+- 节点集合 `N`，节点坐标 `x_i = [x_i, y_i, z_i]^T`
+- 结构边集合 `E`，边 `(i,j) ∈ E`
+- 模态位移 `u_i^(m) = [ux, uy, uz]^T`
+- 应变放大倍数 `scale_m`
+- 模态权重 `eta_m`
+
+### 2.2 构造应变算子 `B`
+
+对每条边 `(i,j)`：
+
+1. 计算边方向局部基
+
+```math
+e_1 = \frac{x_j-x_i}{\|x_j-x_i\|},\quad e_2,e_3 \perp e_1
+```
+
+2. 以 `e1/e2/e3` 三个方向分别形成一条线性约束，形如
+
+```math
+\epsilon_k = \frac{(u_j-u_i)\cdot e_k}{L_{ij}},\quad k\in\{1,2,3\}
+```
+
+把所有边的三条约束堆叠后得到
+
+```math
+\epsilon = B u
+```
+
+说明：当前实现对应三个局部方向分量（`stretch`, `in_plane_bending`, `out_plane_bending`），没有单独求解扭转自由度。
+
+### 2.3 应变放大
+
+每个模态 `m`：
+
+```math
+\epsilon^{(m)} = B u^{(m)}
+```
+
+```math
+\epsilon_{scaled}^{(m)} = scale_m \cdot \epsilon^{(m)}
+```
+
+### 2.4 反算位移（最小二乘）
+
+反算目标：
+
+```math
+u_{scaled}^{(m)} = \arg\min_u \|B u - \epsilon_{scaled}^{(m)}\|_2
+```
+
+实现中附加了 3 个锚定约束（首节点 `ux/uy/uz = 0`）以去除刚体平移不唯一性。
+
+### 2.5 多模态组合
+
+```math
+u_i^{comb} = \sum_m \eta_m\,u_{i,scaled}^{(m)}
+```
+
+并计算
+
+```math
+disp\_mag = \|u_i^{comb}\|_2
+```
+
+---
+
+## 3. 使用方法
+
+### 3.1 安装
 
 ```bash
 uv sync
 ```
 
-如果你只想快速安装运行依赖，也可：
-
-```bash
-uv pip install -e .
-```
-
-### 3.2 Run（启动）
+### 3.2 运行
 
 ```bash
 uv run streamlit run modal_strain_scaler_app.py
 ```
 
-可选入口：
+可选：
 
 ```bash
 uv run streamlit run main.py
 ```
 
-### 3.3 使用步骤
+### 3.3 页面输入
 
-1. 上传或粘贴 BDF（至少含 GRID；有 CBAR 更好）。
-2. 上传或粘贴位移文件（CSV/F06）。
-3. 设置 `epsilon_allow`。
-4. 可选输入模态权重 `eta`：
-   - 按顺序：`1.0,0.8,0.3`
-   - 按名称：`Mode1=1.0,Mode2=0.6`
-5. 查看 summary、应变分布图、3D 变形图。
-6. 下载结果：`summary.csv`、`combined_deformed.csv/.dat`、各模态 ZIP。
+1. BDF（上传或粘贴）
+2. 位移文件（CSV/F06/TXT）
+3. `scale`（应变放大倍数）
 
-### 3.4 输入输出约定（简版）
+`scale` 支持三种写法：
 
-CSV 最少需要列：
+- 单值：`2.0`（所有模态同一倍数）
+- 顺序：`1.0,0.8,1.2`（按模态顺序）
+- 映射：`Mode1=2.0,Mode2=1.5`
+
+4. `eta`（模态权重，可选）
+
+`eta` 支持：顺序或映射两种写法；为空时默认每阶 `1.0`。
+
+### 3.4 输入文件格式
+
+CSV 最少列：
 
 - `node_id`（或 `nid/grid/id`）
 - `ux, uy, uz`（或 `t1, t2, t3`）
-- `mode` 可选（默认 `Mode1`）
+- `mode` 可选（缺省为 `Mode1`）
 
-输出文件：
+F06：当前解析的是位移向量表中的 `G` 点平移分量。
 
-- `summary.csv`：每个模态的应变与缩放统计
-- `combined_deformed.csv`：加权组合位移场
-- `combined_deformed.dat`：文本格式位移导出
-- `mode_deformed_outputs.zip`：逐模态缩放结果
+### 3.5 输出
+
+- `summary.csv`：每模态统计（`input_scale`, `max_abs_strain_raw`, `max_disp_raw`, `max_disp_scaled` 等）
+- `combined_deformed.csv`：按 `eta` 组合后的节点位移
+- `combined_deformed.dat`：文本格式位移
+- `mode_deformed_outputs.zip`：每个模态的反算后位移
+
+---
+
+## 4. Notes
+
+- 若 BDF 没有 `CBAR`，程序会用节点 `k` 近邻（默认 `k=2`）自动补边。
+- 若某些节点在 BDF 与位移文件中无法匹配，这些节点不会参与该模态计算。
+- 出现 `1e-16` 量级的 `ux/uy` 通常是浮点残差，可视为 0。
