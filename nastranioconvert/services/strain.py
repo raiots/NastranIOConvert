@@ -27,6 +27,7 @@ def estimate_mode_strain(
     disp_df: pd.DataFrame,
     mode_weights: Dict[str, float],
     mode_scales: Dict[str, float],
+    component_mode: str = "three_component",
 ) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     grids = model.grids.copy()
     edges = model.edges[["node_i", "node_j"]].copy() if not model.edges.empty else build_fallback_edges(grids)
@@ -40,27 +41,36 @@ def estimate_mode_strain(
         if joined.empty:
             continue
 
-        B, edge_meta = build_strain_operator(joined[["node_id", "x", "y", "z"]], edges)
+        B, edge_meta, components, dof_per_node = build_strain_operator(
+            joined[["node_id", "x", "y", "z"]],
+            edges,
+            component_mode=component_mode,
+        )
         if B.size == 0:
             continue
 
-        u_raw = joined[["ux", "uy", "uz"]].to_numpy(float).reshape(-1)
+        dof_cols = ["ux", "uy", "uz"] if dof_per_node == 3 else ["ux", "uy", "uz", "r1", "r2", "r3"]
+        u_raw = joined[dof_cols].to_numpy(float).reshape(-1)
         eps_raw = B @ u_raw
         scale = float(mode_scales.get(mode, 1.0))
         eps_scaled = eps_raw * scale
 
-        u_scaled = solve_displacement_from_strain(B, eps_scaled, len(joined)).reshape(-1, 3)
+        u_scaled_all = solve_displacement_from_strain(B, eps_scaled, len(joined), dof_per_node=dof_per_node).reshape(-1, dof_per_node)
         scaled = pd.DataFrame(
             {
                 "node_id": joined["node_id"].to_numpy(int),
-                "ux": u_scaled[:, 0],
-                "uy": u_scaled[:, 1],
-                "uz": u_scaled[:, 2],
+                "ux": u_scaled_all[:, 0],
+                "uy": u_scaled_all[:, 1],
+                "uz": u_scaled_all[:, 2],
                 "mode": mode,
             }
         )
+        if dof_per_node == 6:
+            scaled["r1"] = u_scaled_all[:, 3]
+            scaled["r2"] = u_scaled_all[:, 4]
+            scaled["r3"] = u_scaled_all[:, 5]
 
-        edge_mode_df = build_edge_strain_table(mode, edge_meta, eps_raw)
+        edge_mode_df = build_edge_strain_table(mode, edge_meta, eps_raw, components)
         summaries.append(_build_summary(mode, mode_weights, scale, joined, scaled, edge_mode_df))
         scaled_parts.append(scaled)
         edge_parts.append(edge_mode_df)
@@ -76,8 +86,12 @@ def estimate_mode_strain(
 
 
 def _join_mode_displacements(group: pd.DataFrame, grids: pd.DataFrame) -> pd.DataFrame:
+    group = group.copy()
     xyz_map = grids.set_index("node_id")[["x", "y", "z"]]
-    disp = group.groupby("node_id", as_index=False)[["ux", "uy", "uz"]].mean().set_index("node_id")
+    for col in ("r1", "r2", "r3"):
+        if col not in group.columns:
+            group[col] = 0.0
+    disp = group.groupby("node_id", as_index=False)[["ux", "uy", "uz", "r1", "r2", "r3"]].mean().set_index("node_id")
     return xyz_map.join(disp, how="inner").reset_index()
 
 
@@ -97,6 +111,7 @@ def _build_summary(
         "input_scale": scale,
         "max_abs_strain_raw": float(edge_mode_df["strain"].abs().max()),
         "max_stretch_raw": float(edge_mode_df["stretch"].abs().max()),
+        "max_torsion_raw": float(edge_mode_df["torsion"].abs().max()),
         "max_in_plane_bending_raw": float(edge_mode_df["in_plane_bending"].abs().max()),
         "max_out_plane_bending_raw": float(edge_mode_df["out_plane_bending"].abs().max()),
         "max_disp_raw": float(raw_norm.max()),

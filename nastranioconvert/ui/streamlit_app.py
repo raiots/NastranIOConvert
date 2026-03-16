@@ -23,7 +23,7 @@ def main() -> None:
     st.title("Nastran 模态变形转换工具")
     st.caption("流程：BDF/结果导入 -> 位移转应变(Bu=ε) -> 应变放大 -> 最小二乘反算位移 -> 可视化与导出")
 
-    bdf_text, modal_text, modal_name, scale_raw, eta_raw = _render_inputs()
+    bdf_text, modal_text, modal_name, scale_raw, eta_raw, component_mode = _render_inputs()
     if not bdf_text.strip() or not modal_text.strip():
         st.info("请提供 BDF 和模态位移数据（上传或粘贴均可）。")
         st.stop()
@@ -39,10 +39,11 @@ def main() -> None:
             modal.displacements,
             mode_weights,
             mode_scales,
+            component_mode=component_mode,
         )
 
     st.success("自动处理完成。")
-    _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights)
+    _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights, component_mode)
 
 
 def _render_brand_header() -> None:
@@ -77,22 +78,30 @@ def _render_inputs():
             "或粘贴位移文本",
             height=220,
             value=default_modal,
-            placeholder="CSV: node_id,ux,uy,uz[,mode] 或 F06 位移表文本",
+            placeholder="CSV: node_id,ux,uy,uz[,r1,r2,r3][,mode] 或 F06 位移表文本",
         )
 
     st.markdown("### 2) 参数")
-    p1, p2 = st.columns([1, 2])
+    p1, p2, p3 = st.columns([1, 2, 2])
     with p1:
         scale_raw = st.text_input("模态放大倍数 scale", value="1.0", help="例: 2.5 或 1.0,0.8 或 Mode1=2.0,Mode2=1.2")
     with p2:
         eta_raw = st.text_input("模态权重 eta (可选)", value="", help="例: 1.0,0.8 或 Mode1=1.0,Mode2=0.6")
+    with p3:
+        component_mode = st.selectbox(
+            "应变分量模式",
+            options=["three_component", "four_component"],
+            format_func=lambda x: "3量(拉伸/面内/面外)" if x == "three_component" else "4量(拉伸/扭转/面内/面外)",
+            index=0,
+            help="4量模式会额外使用节点转角(r1/r2/r3)计算扭转分量；若输入无转角，扭转默认为 0。",
+        )
 
     bdf_text, _ = load_text_input(bdf_upload, bdf_paste)
     modal_text, modal_name = load_text_input(modal_upload, modal_paste)
-    return bdf_text, modal_text, modal_name, scale_raw, eta_raw
+    return bdf_text, modal_text, modal_name, scale_raw, eta_raw, component_mode
 
 
-def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights) -> None:
+def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, mode_weights, component_mode: str) -> None:
     st.markdown("### 3) 过程可视化")
     k1, k2, k3 = st.columns(3)
     k1.metric("BDF节点数", f"{len(model.grids):,}")
@@ -139,4 +148,5 @@ def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, m
     st.download_button("下载 combined_deformed.dat", to_dat_bytes(combined_df[["node_id", "ux", "uy", "uz"]]), "combined_deformed.dat", "text/plain")
     st.download_button("下载各模态结果 ZIP", to_mode_zip_bytes(scaled_df), "mode_deformed_outputs.zip", "application/zip")
 
-    st.caption("说明：应变计算基于结构边局部三方向分量（拉伸/面内/面外），用于快速调试与倍率建议。")
+    mode_desc = "3量(拉伸/面内/面外)" if component_mode == "three_component" else "4量(拉伸/扭转/面内/面外)"
+    st.caption(f"说明：当前应变分量模式为 {mode_desc}。")

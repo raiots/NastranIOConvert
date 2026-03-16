@@ -18,6 +18,9 @@ def parse_displacement_csv_text(text: str) -> pd.DataFrame:
     ux_col = cols.get("ux") or cols.get("t1") or cols.get("u")
     uy_col = cols.get("uy") or cols.get("t2") or cols.get("v")
     uz_col = cols.get("uz") or cols.get("t3") or cols.get("w")
+    r1_col = cols.get("r1") or cols.get("rx") or cols.get("rotx") or cols.get("theta_x") or cols.get("rot_x")
+    r2_col = cols.get("r2") or cols.get("ry") or cols.get("roty") or cols.get("theta_y") or cols.get("rot_y")
+    r3_col = cols.get("r3") or cols.get("rz") or cols.get("rotz") or cols.get("theta_z") or cols.get("rot_z")
     mode_col = cols.get("mode") or cols.get("mode_id") or cols.get("imode")
 
     if not all([node_col, ux_col, uy_col, uz_col]):
@@ -29,6 +32,9 @@ def parse_displacement_csv_text(text: str) -> pd.DataFrame:
             "ux": pd.to_numeric(df[ux_col], errors="coerce"),
             "uy": pd.to_numeric(df[uy_col], errors="coerce"),
             "uz": pd.to_numeric(df[uz_col], errors="coerce"),
+            "r1": pd.to_numeric(df[r1_col], errors="coerce") if r1_col else 0.0,
+            "r2": pd.to_numeric(df[r2_col], errors="coerce") if r2_col else 0.0,
+            "r3": pd.to_numeric(df[r3_col], errors="coerce") if r3_col else 0.0,
         }
     )
     out["mode"] = df[mode_col].astype(str) if mode_col else "Mode1"
@@ -49,7 +55,9 @@ def parse_f06_displacements(text: str) -> pd.DataFrame:
     mode_pat = re.compile(r"EIGENVALUE\s*=\s*([\dE+\-.]+)", re.IGNORECASE)
     disp_pat = re.compile(
         r"^\s*(\d+)\s+G\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+"
-        r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)"
+        r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+"
+        r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+"
+        r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)"
     )
 
     for line in text.splitlines():
@@ -70,13 +78,22 @@ def parse_f06_displacements(text: str) -> pd.DataFrame:
             match = disp_pat.match(line)
             if match:
                 rows.append(
-                    (mode, int(match.group(1)), clean_num(match.group(2)), clean_num(match.group(3)), clean_num(match.group(4)))
+                    (
+                        mode,
+                        int(match.group(1)),
+                        clean_num(match.group(2)),
+                        clean_num(match.group(3)),
+                        clean_num(match.group(4)),
+                        clean_num(match.group(5)),
+                        clean_num(match.group(6)),
+                        clean_num(match.group(7)),
+                    )
                 )
 
     if not rows:
         raise ValueError("未从 F06 中识别到 G 点位移表，可改用 CSV(node_id,ux,uy,uz)。")
 
-    return pd.DataFrame(rows, columns=["mode", "node_id", "ux", "uy", "uz"])
+    return pd.DataFrame(rows, columns=["mode", "node_id", "ux", "uy", "uz", "r1", "r2", "r3"])
 
 
 def parse_modal_text(text: str, filename_hint: str = "") -> ModalData:
