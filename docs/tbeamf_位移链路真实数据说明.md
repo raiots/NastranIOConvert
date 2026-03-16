@@ -144,12 +144,12 @@ $$
 
 1. 计算边向量与长度：
 $$
-\mathbf{d}_{ij}=\mathbf{x}_j-\mathbf{x}_i,\quad L_{ij}=||\mathbf{d}_{ij}||
+\mathbf{d}_{ij}=\mathbf{x}_j-\mathbf{x}_i,\quad L_{ij}=\lVert \mathbf{d}_{ij}\rVert_2
 $$
 其中：
 
 - $\mathbf{x}_j-\mathbf{x}_i$ 就是“终点坐标减起点坐标”，得到边的方向与尺度
-- $||\cdot||$ 是欧氏范数（向量长度），所以 $L_{ij}$ 是边长
+- $\lVert\cdot\rVert_2$ 是欧氏范数（向量长度），所以 $L_{ij}$ 是边长
 
 2. 构造局部正交基 $\mathbf{e}_1,\mathbf{e}_2,\mathbf{e}_3$，其中 $\mathbf{e}_1$ 沿边方向。
 解释：
@@ -171,9 +171,11 @@ $$
 
 把三条约束按 $k=1,2,3$ 依次写出来就是：
 $$
-\epsilon_{ij}^{(1)}=\frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_1}{L_{ij}},\quad
-\epsilon_{ij}^{(2)}=\frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_2}{L_{ij}},\quad
-\epsilon_{ij}^{(3)}=\frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_3}{L_{ij}}
+\begin{aligned}
+\epsilon_{ij}^{(1)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_1}{L_{ij}},\\
+\epsilon_{ij}^{(2)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_2}{L_{ij}},\\
+\epsilon_{ij}^{(3)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_3}{L_{ij}}.
+\end{aligned}
 $$
 
 堆叠后得到：
@@ -274,7 +276,7 @@ $$
 
 反算目标：
 $$
-u_{scaled}=\arg\min_u ||Bu-\epsilon_{scaled}||_2
+u_{scaled}=\arg\min_{u}\,\lVert Bu-\epsilon_{scaled}\rVert_2
 $$
 
 为去除刚体平移不唯一性，代码附加 3 个锚定约束（首节点）：
@@ -300,7 +302,7 @@ $$
 
 - 相对应变残差
 $$
-\frac{||B u_{rec}-\epsilon_{raw}||_2}{||\epsilon_{raw}||_2}\approx 2.207\times 10^{-14}
+\frac{\lVert B u_{rec}-\epsilon_{raw}\rVert_2}{\lVert\epsilon_{raw}\rVert_2}\approx 2.207\times 10^{-14}
 $$
 
 数值上接近机器精度。
@@ -323,7 +325,7 @@ $$
 
 并输出位移模长：
 $$
-disp\_mag(i)=||u_{comb}(i)||_2
+\mathrm{disp\_mag}(i)=\lVert u_{comb}(i)\rVert_2
 $$
 
 产物：
@@ -353,4 +355,3 @@ $$
 - `scaled_df`：每模态放大后位移
 - `edge_strain_df`：每条边应变分量
 - `combined_df`：加权组合位移场
-
