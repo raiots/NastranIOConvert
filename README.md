@@ -37,21 +37,21 @@
 
 1. 计算边方向局部基
 
-```math
+$$
 e_1 = \frac{x_j-x_i}{\|x_j-x_i\|},\quad e_2,e_3 \perp e_1
-```
+$$
 
 2. 以 `e1/e2/e3` 三个方向分别形成一条线性约束，形如
 
-```math
+$$
 \epsilon_k = \frac{(u_j-u_i)\cdot e_k}{L_{ij}},\quad k\in\{1,2,3\}
-```
+$$
 
 把所有边的三条约束堆叠后得到
 
-```math
+$$
 \epsilon = B u
-```
+$$
 
 说明：当前实现对应三个局部方向分量（`stretch`, `in_plane_bending`, `out_plane_bending`），没有单独求解扭转自由度。
 
@@ -59,35 +59,35 @@ e_1 = \frac{x_j-x_i}{\|x_j-x_i\|},\quad e_2,e_3 \perp e_1
 
 每个模态 `m`：
 
-```math
+$$
 \epsilon^{(m)} = B u^{(m)}
-```
+$$
 
-```math
+$$
 \epsilon_{scaled}^{(m)} = scale_m \cdot \epsilon^{(m)}
-```
+$$
 
 ### 2.4 反算位移（最小二乘）
 
 反算目标：
 
-```math
+$$
 u_{scaled}^{(m)} = \arg\min_u \|B u - \epsilon_{scaled}^{(m)}\|_2
-```
+$$
 
 实现中附加了 3 个锚定约束（首节点 `ux/uy/uz = 0`）以去除刚体平移不唯一性。
 
 ### 2.5 多模态组合
 
-```math
+$$
 u_i^{comb} = \sum_m \eta_m\,u_{i,scaled}^{(m)}
-```
+$$
 
 并计算
 
-```math
+$$
 disp\_mag = \|u_i^{comb}\|_2
-```
+$$
 
 ---
 
