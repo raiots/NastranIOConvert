@@ -102,9 +102,9 @@ D I S P L A C E M E N T   V E C T O R
 
 以下对应核心链路：
 
-$$
+```math
 u \rightarrow \epsilon(=Bu) \rightarrow \epsilon_{scaled} \rightarrow u_{scaled}
-$$
+```
 
 并在最后做模态权重叠加。
 
@@ -112,9 +112,9 @@ $$
 
 对每个模态，程序做一次 inner join：
 
-$$
+```math
 \text{joined} = \text{grids} \bowtie \text{displacements}
-$$
+```
 
 保留同时存在于 BDF 和位移文件中的节点。
 
@@ -143,9 +143,9 @@ $$
 对每条边 $(i,j)$：
 
 1. 计算边向量与长度：
-$$
+```math
 \mathbf{d}_{ij}=\mathbf{x}_j-\mathbf{x}_i,\quad L_{ij}=\lVert \mathbf{d}_{ij}\rVert_2
-$$
+```
 其中：
 
 - $\mathbf{x}_j-\mathbf{x}_i$ 就是“终点坐标减起点坐标”，得到边的方向与尺度
@@ -159,9 +159,9 @@ $$
 - 可以把它理解成“贴在这条边上的一个局部三维坐标系”
 
 3. 分别沿三个方向写线性约束：
-$$
+```math
 \epsilon_{ij}^{(k)}=\frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_k}{L_{ij}},\quad k\in\{1,2,3\}
-$$
+```
 解释：
 
 - 先做位移差：$\Delta\mathbf{u}_{ij}=\mathbf{u}_j-\mathbf{u}_i$，表示这条边两端点的相对位移
@@ -170,18 +170,18 @@ $$
 - 因此 $\epsilon_{ij}^{(k)}$ 可以理解为：边 $(i,j)$ 在局部方向 $\mathbf{e}_k$ 上的离散应变/位移梯度
 
 把三条约束按 $k=1,2,3$ 依次写出来就是：
-$$
+```math
 \begin{aligned}
 \epsilon_{ij}^{(1)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_1}{L_{ij}},\\
 \epsilon_{ij}^{(2)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_2}{L_{ij}},\\
 \epsilon_{ij}^{(3)} &= \frac{(\mathbf{u}_j-\mathbf{u}_i)\cdot\mathbf{e}_3}{L_{ij}}.
 \end{aligned}
-$$
+```
 
 堆叠后得到：
-$$
+```math
 \epsilon = B u
-$$
+```
 
 其中：
 
@@ -203,9 +203,9 @@ $$
 
 - `N = 11`, `E = 10`
 - 所以 $B$ 的尺寸是：
-$$
+```math
 B \in \mathbb{R}^{30\times 33}
-$$
+```
 
 产物：
 
@@ -215,14 +215,14 @@ $$
 ### 2.3 Step C：位移转应变（原始）
 
 将 `joined` 中位移拉平成向量 $u_{raw}$：
-$$
+```math
 u_{raw}=[u_{x1},u_{y1},u_{z1},\dots,u_{xN},u_{yN},u_{zN}]^T
-$$
+```
 
 计算：
-$$
+```math
 \epsilon_{raw}=B\,u_{raw}
-$$
+```
 
 本例统计（`Mode1`）：
 
@@ -240,29 +240,29 @@ $$
 - $L_{12} \approx 0.10000000149$
 - $\Delta \mathbf{u}=\mathbf{u}_2-\mathbf{u}_1=[0,0,-1.381695\times 10^{-3}]$
 - 该边局部基接近：
-$$
+```math
 \mathbf{e}_1=[1,0,0],\ \mathbf{e}_2=[0,1,0],\ \mathbf{e}_3=[0,0,1]
-$$
+```
 
 则：
-$$
+```math
 \epsilon_{12}^{(1)}=\frac{\Delta\mathbf{u}\cdot\mathbf{e}_1}{L_{12}}=0
-$$
-$$
+```
+```math
 \epsilon_{12}^{(2)}=\frac{\Delta\mathbf{u}\cdot\mathbf{e}_2}{L_{12}}=0
-$$
-$$
+```
+```math
 \epsilon_{12}^{(3)}=\frac{\Delta\mathbf{u}\cdot\mathbf{e}_3}{L_{12}}\approx -0.01381695
-$$
+```
 
 与程序输出一致。
 
 ### 2.4 Step D：应变放大
 
 对每个模态给定放大倍数 $s_m$（UI 中的 `scale`）：
-$$
+```math
 \epsilon_{scaled}^{(m)}=s_m\cdot\epsilon_{raw}^{(m)}
-$$
+```
 
 本数据仅 `Mode1`，当 `scale=1.0` 时自然不变。
 
@@ -275,17 +275,17 @@ $$
 ### 2.5 Step E：最小二乘反算位移
 
 反算目标：
-$$
+```math
 u_{scaled}=\arg\min_{u}\,\lVert Bu-\epsilon_{scaled}\rVert_2
-$$
+```
 
 为去除刚体平移不唯一性，代码附加 3 个锚定约束（首节点）：
-$$
+```math
 u_{x1}=0,\ u_{y1}=0,\ u_{z1}=0
-$$
+```
 
 即求解增广系统：
-$$
+```math
 \begin{bmatrix}
 B\\
 A
@@ -294,16 +294,16 @@ A
 \epsilon_{scaled}\\
 0
 \end{bmatrix}
-$$
+```
 
 其中 $A$ 只在首节点三个自由度上取 1。
 
 本例（`Mode1`, `scale=1.0`）重构一致性：
 
 - 相对应变残差
-$$
+```math
 \frac{\lVert B u_{rec}-\epsilon_{raw}\rVert_2}{\lVert\epsilon_{raw}\rVert_2}\approx 2.207\times 10^{-14}
-$$
+```
 
 数值上接近机器精度。
 
@@ -314,19 +314,19 @@ $$
 ### 2.6 Step F：模态加权组合
 
 若有多模态，按 UI 中 `eta` 做线性组合：
-$$
+```math
 u_{comb}(i)=\sum_m \eta_m\,u_{scaled}^{(m)}(i)
-$$
+```
 
 本例只有一个模态，且默认 $\eta_1=1$，故：
-$$
+```math
 u_{comb}=u_{scaled}
-$$
+```
 
 并输出位移模长：
-$$
+```math
 \mathrm{disp\_mag}(i)=\lVert u_{comb}(i)\rVert_2
-$$
+```
 
 产物：
 
