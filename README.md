@@ -9,6 +9,8 @@
 在线 Demo：  
 [NastranIOConvert Streamlit App](https://nastranioconvert.streamlit.app/)
 
+![Preview](docs/assets/homepage.png)
+
 ## 1. 概览
 
 项目用途：
@@ -104,9 +106,6 @@ uv sync
 ```bash
 uv run streamlit run modal_strain_scaler_app.py
 ```
-
-在线体验：  
-[NastranIOConvert Streamlit App](https://nastranioconvert-kxr5eivbce3fzvbboie7g4.streamlit.app/)
 
 可选：
 
