@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+import numpy as np
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -120,24 +121,49 @@ def _render_results(model, summary_df, scaled_df, edge_strain_df, combined_df, m
         st.plotly_chart(hist_fig, use_container_width=True)
 
     modes = summary_df["mode"].tolist()
-    mode_pick = st.selectbox("查看某个模态的变形叠加图", options=modes, index=0)
-    mode_key = str(mode_pick).strip()
+    selected_modes = st.multiselect("选择要叠加显示的模态", options=modes, default=modes[:1])
+    selected_modes = [str(mode).strip() for mode in selected_modes]
     scaled_for_overlay = scaled_df.copy()
     scaled_for_overlay["mode"] = scaled_for_overlay["mode"].astype(str).str.strip()
-    eta = float(mode_weights.get(mode_pick, mode_weights.get(mode_key, 1.0)))
-    mask = scaled_for_overlay["mode"] == mode_key
-    scaled_for_overlay.loc[mask, ["ux", "uy", "uz"]] *= eta
+    if selected_modes:
+        mask = scaled_for_overlay["mode"].isin(selected_modes)
+    else:
+        mask = pd.Series(False, index=scaled_for_overlay.index)
+    for mode_key in selected_modes:
+        eta = float(mode_weights.get(mode_key, 1.0))
+        mode_mask = scaled_for_overlay["mode"] == mode_key
+        scaled_for_overlay.loc[mode_mask, ["ux", "uy", "uz"]] *= eta
+
+    selected_combined_df = pd.DataFrame(columns=["node_id", "ux", "uy", "uz", "disp_mag"])
+    if mask.any():
+        selected_combined_df = scaled_for_overlay.loc[mask, ["node_id", "ux", "uy", "uz"]].copy()
+        selected_combined_df = selected_combined_df.groupby("node_id", as_index=False)[["ux", "uy", "uz"]].sum()
+        selected_combined_df["disp_mag"] = np.linalg.norm(
+            selected_combined_df[["ux", "uy", "uz"]].to_numpy(float),
+            axis=1,
+        )
     debug_overlay = st.checkbox("显示 Overlay 调试信息（临时）", value=False) if APP_ENV in {"dev", "debug"} else False
     v3, v4 = st.columns(2)
     with v3:
-        if not mask.any():
-            st.warning(f"Overlay 未匹配到 mode={mode_key} 的数据，请打开调试信息查看。")
-        st.caption(f"当前模态权重 eta({mode_key}) = {eta:.6g}，Overlay 显示已乘权重后的位移。")
-        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_for_overlay, mode_key), use_container_width=True)
+        if not selected_modes:
+            st.warning("请至少选择一个模态以显示叠加图。")
+        elif not mask.any():
+            st.warning("Overlay 未匹配到已选模态的数据，请打开调试信息查看。")
+        else:
+            eta_desc = ", ".join([f"{m}:{float(mode_weights.get(m, 1.0)):.6g}" for m in selected_modes])
+            st.caption(f"当前显示模态权重 eta = [{eta_desc}]，Overlay 已乘权重后的位移。")
+        st.plotly_chart(fig_deformed_overlay_3d(model.grids, scaled_for_overlay, selected_modes), use_container_width=True)
         if debug_overlay:
-            render_overlay_debug(model.grids, scaled_for_overlay, mask, mode_pick, mode_key)
+            pick_label = ",".join(selected_modes) if selected_modes else "(none)"
+            render_overlay_debug(model.grids, scaled_for_overlay, mask, pick_label, pick_label)
     with v4:
-        st.plotly_chart(fig_combined_deformed_3d(model.grids, combined_df), use_container_width=True)
+        if selected_modes and not selected_combined_df.empty:
+            st.plotly_chart(
+                fig_combined_deformed_3d(model.grids, selected_combined_df, title_suffix="(Selected Modes)"),
+                use_container_width=True,
+            )
+        else:
+            st.plotly_chart(fig_combined_deformed_3d(model.grids, combined_df), use_container_width=True)
 
     st.markdown("### 4) 结果输出")
     st.subheader("加权组合后的位移场")

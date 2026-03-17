@@ -56,47 +56,68 @@ def fig_structure_3d(grids: pd.DataFrame, edges: pd.DataFrame | None = None) -> 
     return fig
 
 
-def fig_deformed_overlay_3d(grids: pd.DataFrame, scaled_df: pd.DataFrame, mode: str) -> go.Figure:
-    mode_df = scaled_df[scaled_df["mode"] == mode]
-    merged = grids.merge(mode_df, on="node_id", how="inner")
-    x_def = merged["x"] + merged["ux"]
-    y_def = merged["y"] + merged["uy"]
-    z_def = merged["z"] + merged["uz"]
+def fig_deformed_overlay_3d(grids: pd.DataFrame, scaled_df: pd.DataFrame, mode: str | list[str]) -> go.Figure:
+    mode_list = [mode] if isinstance(mode, str) else [str(m) for m in mode]
+    selected = scaled_df[scaled_df["mode"].isin(mode_list)] if mode_list else scaled_df.iloc[0:0]
+    merged_all = grids.merge(selected, on="node_id", how="inner")
 
     fig = go.Figure()
+    if not merged_all.empty:
+        base_nodes = merged_all[["node_id", "x", "y", "z"]].drop_duplicates(subset=["node_id"]).copy()
+    else:
+        base_nodes = grids[["node_id", "x", "y", "z"]].copy()
+
     fig.add_trace(
         go.Scatter3d(
-            x=merged["x"],
-            y=merged["y"],
-            z=merged["z"],
+            x=base_nodes["x"],
+            y=base_nodes["y"],
+            z=base_nodes["z"],
             mode="markers+lines",
             marker=dict(size=2, color="rgba(100,100,100,0.45)"),
             line=dict(color="rgba(120,120,120,0.45)", width=2),
             name="original",
-            customdata=merged["node_id"],
-            hovertemplate="node=%{customdata}<br>x=%{x:.3f}<br>y=%{y:.3f}<br>z=%{z:.3f}<extra></extra>",
-        )
-    )
-    fig.add_trace(
-        go.Scatter3d(
-            x=x_def,
-            y=y_def,
-            z=z_def,
-            mode="markers+lines",
-            marker=dict(size=5, color="#d62728", opacity=0.95),
-            line=dict(color="#d62728", width=4),
-            name="scaled",
-            customdata=merged["node_id"],
+            customdata=base_nodes["node_id"],
             hovertemplate="node=%{customdata}<br>x=%{x:.3f}<br>y=%{y:.3f}<br>z=%{z:.3f}<extra></extra>",
         )
     )
 
-    x_range = _safe_axis_range(pd.concat([merged["x"], x_def], ignore_index=True))
-    y_range = _safe_axis_range(pd.concat([merged["y"], y_def], ignore_index=True))
-    z_range = _safe_axis_range(pd.concat([merged["z"], z_def], ignore_index=True))
+    palette = px.colors.qualitative.Set2 + px.colors.qualitative.Dark24
+    for idx, one_mode in enumerate(mode_list):
+        mode_df = merged_all[merged_all["mode"] == one_mode]
+        if mode_df.empty:
+            continue
+        x_def = mode_df["x"] + mode_df["ux"]
+        y_def = mode_df["y"] + mode_df["uy"]
+        z_def = mode_df["z"] + mode_df["uz"]
+        color = palette[idx % len(palette)]
+        fig.add_trace(
+            go.Scatter3d(
+                x=x_def,
+                y=y_def,
+                z=z_def,
+                mode="markers+lines",
+                marker=dict(size=5, color=color, opacity=0.95),
+                line=dict(color=color, width=4),
+                name=f"scaled-{one_mode}",
+                customdata=mode_df["node_id"],
+                hovertemplate="node=%{customdata}<br>x=%{x:.3f}<br>y=%{y:.3f}<br>z=%{z:.3f}<extra></extra>",
+            )
+        )
+
+    if not merged_all.empty:
+        x_def_all = merged_all["x"] + merged_all["ux"]
+        y_def_all = merged_all["y"] + merged_all["uy"]
+        z_def_all = merged_all["z"] + merged_all["uz"]
+        x_range = _safe_axis_range(pd.concat([merged_all["x"], x_def_all], ignore_index=True))
+        y_range = _safe_axis_range(pd.concat([merged_all["y"], y_def_all], ignore_index=True))
+        z_range = _safe_axis_range(pd.concat([merged_all["z"], z_def_all], ignore_index=True))
+    else:
+        x_range = _safe_axis_range(base_nodes["x"])
+        y_range = _safe_axis_range(base_nodes["y"])
+        z_range = _safe_axis_range(base_nodes["z"])
 
     fig.update_layout(
-        title=f"Mode Overlay (Interactive 3D): {mode}",
+        title=f"Mode Overlay (Interactive 3D): {', '.join(mode_list) if mode_list else 'none'}",
         scene=dict(
             xaxis=dict(title="X", range=x_range),
             yaxis=dict(title="Y", range=y_range),
@@ -121,7 +142,7 @@ def _safe_axis_range(values: pd.Series, min_span: float = 1e-3) -> list[float]:
     return [lo - pad, hi + pad]
 
 
-def fig_combined_deformed_3d(grids: pd.DataFrame, combined_df: pd.DataFrame) -> go.Figure:
+def fig_combined_deformed_3d(grids: pd.DataFrame, combined_df: pd.DataFrame, title_suffix: str = "") -> go.Figure:
     merged = grids.merge(combined_df, on="node_id", how="inner")
     fig = px.scatter_3d(
         merged,
@@ -132,7 +153,7 @@ def fig_combined_deformed_3d(grids: pd.DataFrame, combined_df: pd.DataFrame) -> 
         color_continuous_scale="Turbo",
         opacity=0.9,
         hover_data=["node_id", "ux", "uy", "uz", "disp_mag"],
-        title="Combined Displacement Magnitude (Interactive 3D)",
+        title=f"Combined Displacement Magnitude (Interactive 3D) {title_suffix}".strip(),
     )
     fig.update_traces(marker=dict(size=3))
     fig.update_layout(
