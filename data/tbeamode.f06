@@ -1,0 +1,690 @@
+1
+ 
+ 
+ 
+ 
+                      Warning: This computer program is protected by copyright law and international treaties.       
+                  Unauthorized use, reproduction or distribution of this computer program, or any portion of it, may 
+                                          result in severe civil and criminal penalties.                             
+                         Copyright (C) 2017 MSC Software Corporation and its licensors. All rights reserved.         
+ 
+ 
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * *                                 * *
+                                              * *           MSC Software          * *
+                                              * *               CORP              * *
+                                              * *                                 * *
+                                              * *      M S C   N a s t r a n      * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *     Version 2018.0.0-CL529700   * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *                                 * *
+                                              * *          NOV 14, 2017           * *
+                                              * *                                 * *
+                                              * *              Intel              * *
+                                              * *  MODEL P5-4/7100 (RaiotWinVM)   * *
+                                              * * Windows 10 Home China 6.2 9200  * *
+                                              * * Compiled for 8664 (SINGLE Mode) * *
+                                              * *                                 * *
+                                              * * * * * * * * * * * * * * * * * * * *
+                                              * * * * * * * * * * * * * * * * * * * *
+1News file - (October 31, 2017)
+  
+               Welcome to MSC Nastran 2018.0
+  
+  
+   Details of the new capabilities can be found in the MSC Nastran 2018
+     Release Guide available online in the installation documentation
+     sub-directory.
+   Additional information can be found at the MSC Nastran Product Support page:
+  
+      http://simcompanion.mscsoftware.com
+  
+  
+   The support page provides links to these valuable information:
+      * A searchable Knowledge Base containing examples and answers to thousands
+        of frequently asked questions written by MSC Software subject-matter
+        experts.
+      * Peer-to-peer Discussion Forums enabling you to post questions for your
+        MSC Software products and receive answers from other users worldwide.
+      * A list of known issues with the product and any workarounds.
+      * Instructions on how to contact technical support
+      * A mechanism for sending us product feedback or enhancement requests.
+      * Hardware and software requirements.
+      * Examples and Tutorials
+      * and much more.
+  
+   For information on training, please visit our Training web site
+  
+      http://www.mscsoftware.com/Contents/Services/Training/
+  
+   MSC Nastran brings powerful new features and enhancements for engineering
+   solutions.
+  
+     Dynamics
+     -  Structural and Fluid Material property specification can now be
+        frequency dependent.
+     -  Anisotropic structural damping can be defined for composite
+        materials. Restriction removed that damping is proportional to
+        stiffness.
+     -  Spatial definition of property and material available now.
+  
+     Linear Buckling
+     -  Linear Buckling with local exclusion of differential stiffness in SOL
+        105.
+  
+     Rotordynamics
+     -  Enhanced Mode-Tracking for Campbell Diagrams. Two new methods
+        introduced: Numerical Slope-Continuity and Eigenvector-Based.
+     -  Rotors can now be included in upstream Part Superelements for
+        both single and multi-level assemblies.
+1    -  Support for definition of CBUSH element cross-coupling terms.
+  
+     Multiple-Mass Configuration
+     -  Easy definition and analysis of multiple mass cases in a single run.
+        Supported in SOL 101, 103, 107/110, 108/111, 109/112, 144, 145, 146,
+        200 and 400 solution sequences.
+  
+     Optimization
+     -  Shell stress constraints can now be defined for Topology Optimization.
+  
+     Assembly
+     -  New modules that can assemble multiple Bulk Data sections to form a
+        single MSC Nastran input file. Modules are analogous to part
+        superelements without reduction and are supported in SOL 101 - 112.
+  
+     Implicit Nonlinear Analysis - SOL 400
+     -  GPFORCE Output with Contact
+     -  Automatic Contact Generation
+     -  External Superelements Creation, Assembly and Data Recovery
+     -  CFAST Fastener element enabled to FUSE based on load criteria.
+  
+     Explicit Nonlinear Analysis - SOL 700
+     -  Automated Coupling Surfaces
+     -  New SOL 700 Dytran, Dytran under Nastran
+  
+     HPC
+     -  Improved performance and scalability for the New ACMS method
+     -  New MPYAD with better parallel performance and better method
+        selection.
+     -  New command line option, solve=auto and cpumax=N, to automatically
+        choose optimal solver and parallel options based on hardware and
+        the model.
+  
+     Results HDF5 Database
+     -  Additional data blocks have been added to the HDF5 file: OEFTGV,
+        OMONPNT, TOMVAR, TOPVAR, R1TABRD, HISADD, RESP12, WETFACES, META,
+        OFCRFM, EPTFSP, MPTFSP, TRNUORD, and UHT, as well as modal and
+        Rotordynamic matrices.
+  
+     Documentation
+  
+     The complete documentation set is provided in a separate installer and
+     when installed is available at:
+     MSC_DOC_DIR/doc/pdf_nastran directory.
+     Where MSC_DOC_DIR is the directory where documentation was installed
+     This help set has cross references between documents, links to how-to
+     videos, and example files.
+  
+     Individual MSC Nastran documents are available for download from the
+       Simcompanion Website at:
+1      http://simcompanion.mscsoftware.com/
+  
+     These documents were updated for the MSC Nastran 2018.0 Release
+  
+         1.  MSC Nastran 2018.0 Installation and Operations Guide
+         2.  MSC Nastran 2018.0 Quick Reference Guide
+         3.  MSC Nastran 2018.0 Release Guide
+         4.  MSC Nastran 2018.0 Linear Statics Analysis User's Guide
+         5.  MSC Nastran 2018.0 Dynamic Analysis User's Guide
+         6.  MSC Nastran 2018.0 Superelements User's Guide
+         7.  MSC Nastran 2018.0 Rotordynamics User's Guide
+         8.  MSC Nastran 2018.0 Demonstration Problems Manual
+         9.  MSC Nastran 2018.0 Nastran Embedded Fatigue User's Guide
+        10.  MSC Nastran 2018.0 Design Sensitivity and Optimization
+        11.  MSC Nastran 2018.0 Nonlinear User's Guide SOL 400
+        12.  MSC Nastran 2018.0 DMAP Programmer's Guide
+        13.  MSC Nastran 2018.0 High Performance Computing User's Guide
+  
+  
+  
+    Please refer to:
+  
+    MSC_DOC_DIR/doc/pdf_nastran/nastran_library.pdf
+  
+1                                                                             MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     1
+                                                                                                                                    
+0        N A S T R A N    F I L E    A N D    S Y S T E M    P A R A M E T E R    E C H O                                           
+0                                                                                                                                   
+                                                                                                                                    
+                                                                                                                                    
+     $ SYSFIELD=SCR*(RAW=YES,BUFFIO=YES,WNUM=16,WSIZE=16MB) $(C:/MSC.SOFTWARE/MSC_NAS
+     $ SYSFIELD=DBALL(RAW=YES,BUFFIO=YES,WNUM=16,WSIZE=16MB) $(C:/MSC.SOFTWARE/MSC_NA
+     NASTRAN BUFFSIZE=8193 $(C:/MSC.SOFTWARE/MSC_NASTRAN/20180/CONF/NAST20180.RCF[6])
+     $ MSC.NASTRAN INPUT FILE CREATED ON MARCH     17, 2026 AT 12:23:18 BY           
+     $ PATRAN 2018                                                                   
+     $ DIRECT TEXT INPUT FOR NASTRAN SYSTEM CELL SECTION                             
+     $ DIRECT TEXT INPUT FOR FILE MANAGEMENT SECTION                                 
+     $ DIRECT TEXT INPUT FOR EXECUTIVE CONTROL                                       
+     $ NORMAL MODES ANALYSIS, DATABASE                                               
+1                                                                             MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     2
+                                                                                                                                    
+0        N A S T R A N    E X E C U T I V E    C O N T R O L    E C H O                                                             
+0                                                                                                                                   
+                                                                                                                                    
+                                                                                                                                    
+     SOL 103                                                                                 
+     CEND                                                                                    
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     3
+                                                                                                                                    
+0                                                                                                                                   
+0                                        C A S E    C O N T R O L    E C H O                                                        
+                 COMMAND                                                                                                            
+                 COUNT                                                                                                              
+                  1      $ DIRECT TEXT INPUT FOR GLOBAL CASE CONTROL DATA                                        
+                  2      TITLE = MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                                
+                  3      ECHO = NONE                                                                             
+                  4      $ USING NASTRAN DEFAULT VALUES FOR RESVEC                                               
+                  5      SUBCASE 1                                                                               
+                  6         SUBTITLE=DEFAULT                                                                     
+                  7         METHOD = 1                                                                           
+                  8         SPC = 2                                                                              
+                  9         VECTOR(SORT1,REAL)=ALL                                                               
+                 10         SPCFORCES(SORT1,REAL)=ALL                                                            
+                 11      $ DIRECT TEXT INPUT FOR THIS SUBCASE                                                    
+                 12      BEGIN BULK                                                                              
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     4
+                                                                                                                                    
+0                                                                                                                                   
+                                        M O D E L   S U M M A R Y          BULK = 0
+                                   ENTRY NAME        NUMBER OF ENTRIES
+                                   ----------        -----------------
+                                         CBAR                       10
+                                        EIGRL                        1
+                                         GRID                       11
+                                         MAT1                        1
+                                        PARAM                        2
+                                        PBARL                        1
+                                         SPC1                        1
+                                       SPCADD                        1
+
+ ^^^     
+ ^^^ >>> IFP OPERATIONS COMPLETE <<< 
+ ^^^     
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     5
+                                                                                                                                    
+0                                                                                                                                   
+ *** USER INFORMATION MESSAGE 7310 (VECPRN)
+     ORIGIN OF SUPERELEMENT OR MODULE BASIC COORDINATE SYSTEM WILL BE USED AS REFERENCE LOCATION.
+     RESULTANTS ABOUT ORIGIN OF SUPERELEMENT OR MODULE BASIC COORDINATE SYSTEM IN SUPERELEMENT OR MODULE
+     BASIC SYSTEM COORDINATES.
+0                                                  OLOAD    RESULTANT       
+  SUBCASE/    LOAD
+  DAREA ID    TYPE       T1            T2            T3            R1            R2            R3
+0        1     FX    0.000000E+00     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       0.000000E+00     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       0.000000E+00  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----       0.000000E+00     ----                                  
+               MZ       ----          ----          ----          ----          ----       0.000000E+00                             
+             TOTALS  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00  0.000000E+00
+ *** USER INFORMATION MESSAGE 5010 (LNCILS)
+     STURM SEQUENCE DATA FOR EIGENVALUE EXTRACTION.
+     TRIAL EIGENVALUE = 5.256800D+05, CYCLES = 1.153934D+02 THE STURM COUNT = 4
+ *** USER INFORMATION MESSAGE 5010 (LNCILS)
+     STURM SEQUENCE DATA FOR EIGENVALUE EXTRACTION.
+     TRIAL EIGENVALUE = 2.465394D+07, CYCLES = 7.902479D+02 THE STURM COUNT = 10
+
+ TABLE OF SHIFTS:  (LNNRIGL)
+ SHIFT #        SHIFT VALUE         FREQUENCY, CYCLES     # EIGENVALUES BELOW    # NEW EIGENVALUES FOUND
+     1.        5.2567997E+05          1.1539337E+02                 4                       30
+     2.        2.4653943E+07          7.9024786E+02                10                        0
+
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     6
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+0
+
+
+                          E I G E N V A L U E  A N A L Y S I S   S U M M A R Y   (READ MODULE) 
+
+
+
+                                     BLOCK SIZE USED ......................     7
+
+                                     NUMBER OF DECOMPOSITIONS .............     2
+
+                                     NUMBER OF ROOTS FOUND ................    10
+
+                                     NUMBER OF SOLVES REQUIRED ............     7
+
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     7
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+ 
+                                              R E A L   E I G E N V A L U E S
+   MODE    EXTRACTION      EIGENVALUE            RADIANS             CYCLES            GENERALIZED         GENERALIZED
+    NO.       ORDER                                                                       MASS              STIFFNESS
+        1         1        2.748000E+03        5.242137E+01        8.343120E+00        1.000000E+00        2.748000E+03
+        2         2        1.098805E+04        1.048239E+02        1.668324E+01        1.000000E+00        1.098805E+04
+        3         3        1.054613E+05        3.247481E+02        5.168526E+01        1.000000E+00        1.054613E+05
+        4         4        4.207973E+05        6.486889E+02        1.032420E+02        1.000000E+00        4.207973E+05
+        5         5        8.094111E+05        8.996728E+02        1.431874E+02        1.000000E+00        8.094111E+05
+        6         6        3.038230E+06        1.743052E+03        2.774153E+02        1.000000E+00        3.038230E+06
+        7         7        3.218351E+06        1.793976E+03        2.855202E+02        1.000000E+00        3.218351E+06
+        8         8        8.097901E+06        2.845681E+03        4.529042E+02        1.000000E+00        8.097901E+06
+        9         9        1.201579E+07        3.466380E+03        5.516915E+02        1.000000E+00        1.201579E+07
+       10        10        1.752376E+07        4.186139E+03        6.662447E+02        1.000000E+00        1.752376E+07
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     8
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+ *** USER INFORMATION MESSAGE 7310 (VECPRN)
+     ORIGIN OF SUPERELEMENT OR MODULE BASIC COORDINATE SYSTEM WILL BE USED AS REFERENCE LOCATION.
+     RESULTANTS ABOUT ORIGIN OF SUPERELEMENT OR MODULE BASIC COORDINATE SYSTEM IN SUPERELEMENT OR MODULE
+     BASIC SYSTEM COORDINATES.
+0                                                  SPCFORCE RESULTANT       
+  SUBCASE/    LOAD
+  DAREA ID    TYPE       T1            T2            T3            R1            R2            R3
+0        1     FX   -1.032888E-10     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----      -3.586480E-10     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----      -2.682326E+03  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----       1.956847E+03     ----                                  
+               MZ       ----          ----          ----          ----          ----      -7.150583E-11                             
+             TOTALS -1.032888E-10 -3.586480E-10 -2.682326E+03  0.000000E+00  1.956847E+03 -7.150583E-11
+0        2     FX    6.271915E-11     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----      -1.072615E+04     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       5.971965E-11  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -8.255656E-12     ----                                  
+               MZ       ----          ----          ----          ----          ----      -7.824712E+03                             
+             TOTALS  6.271915E-11 -1.072615E+04  5.971965E-11  0.000000E+00 -8.255656E-12 -7.824712E+03
+0        3     FX   -1.366284E-11     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       2.908908E-10     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----      -5.720310E+04  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----       1.205213E+04     ----                                  
+               MZ       ----          ----          ----          ----          ----       7.065815E-11                             
+             TOTALS -1.366284E-11  2.908908E-10 -5.720310E+04  0.000000E+00  1.205213E+04  7.065815E-11
+0        4     FX   -1.987050E-13     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       2.283482E+05     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       5.655048E-12  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -1.133108E-12     ----                                  
+               MZ       ----          ----          ----          ----          ----       4.807627E+04                             
+             TOTALS -1.987050E-13  2.283482E+05  5.655048E-12  0.000000E+00 -1.133108E-12  4.807627E+04
+0        5     FX    1.590868E-11     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----      -4.082828E-11     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       2.571996E+05  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -3.323646E+04     ----                                  
+               MZ       ----          ----          ----          ----          ----      -1.022475E-11                             
+             TOTALS  1.590868E-11 -4.082828E-11  2.571996E+05  0.000000E+00 -3.323646E+04 -1.022475E-11
+0        6     FX   -8.983731E-11     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       3.163789E-08     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       6.898098E+05  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -6.420914E+04     ----                                  
+               MZ       ----          ----          ----          ----          ----       3.964446E-09                             
+             TOTALS -8.983731E-11  3.163789E-08  6.898098E+05  0.000000E+00 -6.420914E+04  3.964446E-09
+0        7     FX   -5.626693E-11     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----      -1.023619E+06     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       2.825308E-08  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -2.655928E-09     ----                                  
+               MZ       ----          ----          ----          ----          ----      -1.320338E+05                             
+             TOTALS -5.626693E-11 -1.023619E+06  2.825308E-08  0.000000E+00 -2.655928E-09 -1.320338E+05
+0        8     FX    3.890315E-10     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       9.857423E-09     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       1.426764E+06  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -1.047832E+05     ----                                  
+               MZ       ----          ----          ----          ----          ----       1.218101E-09                             
+             TOTALS  3.890315E-10  9.857423E-09  1.426764E+06  0.000000E+00 -1.047832E+05  1.218101E-09
+0        9     FX   -2.999420E-09     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       2.731820E+06     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----       9.125570E-09  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----      -6.389766E-10     ----                                  
+               MZ       ----          ----          ----          ----          ----       2.534161E+05                             
+             TOTALS -2.999420E-09  2.731820E+06  9.125570E-09  0.000000E+00 -6.389766E-10  2.534161E+05
+0       10     FX    2.248793E-09     ----          ----          ----       0.000000E+00  0.000000E+00                             
+               FY       ----       2.671926E-09     ----       0.000000E+00     ----       0.000000E+00                             
+               FZ       ----          ----      -2.509630E+06  0.000000E+00  0.000000E+00     ----                                  
+               MX       ----          ----          ----       0.000000E+00     ----          ----                                  
+               MY       ----          ----          ----          ----       1.540922E+05     ----                                  
+               MZ       ----          ----          ----          ----          ----       6.100267E-11                             
+             TOTALS  2.248793E-09  2.671926E-09 -2.509630E+06  0.000000E+00  1.540922E+05  6.100267E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE     9
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+0                                                  MAXIMUM  SPCFORCES       
+  SUBCASE/
+  DAREA ID        T1             T2             T3             R1             R2             R3
+0        1   1.0328883E-10  3.5864799E-10  2.6823264E+03  0.0000000E+00  1.9568475E+03  7.1505835E-11
+0        2   6.2719152E-11  1.0726149E+04  5.9719652E-11  0.0000000E+00  8.2556563E-12  7.8247121E+03
+0        3   1.3662838E-11  2.9089075E-10  5.7203104E+04  0.0000000E+00  1.2052127E+04  7.0658149E-11
+0        4   1.9870501E-13  2.2834822E+05  5.6550483E-12  0.0000000E+00  1.1331084E-12  4.8076275E+04
+0        5   1.5908679E-11  4.0828275E-11  2.5719956E+05  0.0000000E+00  3.3236457E+04  1.0224747E-11
+0        6   8.9837305E-11  3.1637894E-08  6.8980976E+05  0.0000000E+00  6.4209135E+04  3.9644456E-09
+0        7   5.6266930E-11  1.0236190E+06  2.8253078E-08  0.0000000E+00  2.6559282E-09  1.3203385E+05
+0        8   3.8903150E-10  9.8574231E-09  1.4267645E+06  0.0000000E+00  1.0478320E+05  1.2181010E-09
+0        9   2.9994203E-09  2.7318204E+06  9.1255703E-09  0.0000000E+00  6.3897656E-10  2.5341607E+05
+0       10   2.2487928E-09  2.6719259E-09  2.5096301E+06  0.0000000E+00  1.5409222E+05  6.1002667E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    10
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+0                                                  MAXIMUM  DISPLACEMENTS   
+  SUBCASE/
+  DAREA ID        T1             T2             T3             R1             R2             R3
+0        1   5.7514616E-19  3.8903867E-15  1.5950378E+00  0.0000000E+00  2.2014362E+00  1.4431261E-14
+0        2   4.9484561E-19  1.5948974E+00  1.2517228E-15  0.0000000E+00  5.1875277E-15  2.2006274E+00
+0        3   8.1314068E-20  2.1103784E-15  1.5571291E+00  0.0000000E+00  7.6587986E+00  6.6251588E-15
+0        4   6.0652670E-20  1.5562425E+00  1.8018971E-16  0.0000000E+00  5.1271757E-16  7.6466388E+00
+0        5   1.7363752E-19  1.2901497E-15  1.4903460E+00  0.0000000E+00  1.2726697E+01  4.3183198E-15
+0        6   1.3974697E-18  5.6162471E-14  1.3815477E+00  0.0000000E+00  1.7959404E+01  4.6156939E-13
+0        7   8.7928534E-19  1.4886879E+00  4.9988104E-14  0.0000000E+00  6.3617364E-13  1.2672894E+01
+0        8   6.0447137E-18  1.1270305E-14  1.2268037E+00  0.0000000E+00  2.2785761E+01  7.9379838E-14
+0        9   4.5536392E-17  1.3795733E+00  1.3232720E-14  0.0000000E+00  1.5195384E-13  1.7814998E+01
+0       10   3.7655245E-17  4.0294863E-14  1.1116214E+00  0.0000000E+00  2.6438316E+01  3.1610320E-13
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    11
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  2.748000E+03
+          CYCLES =  8.343120E+00         R E A L   E I G E N V E C T O R   N O .          1
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      2.459258E-19   2.153460E-16   2.669759E-02   0.0           -5.207804E-01   3.826674E-15
+             3      G      4.122473E-19   6.873694E-16   1.016467E-01   0.0           -9.650864E-01   5.158722E-15
+             4      G      5.149453E-19   1.175740E-15   2.172313E-01   0.0           -1.333704E+00   4.207818E-15
+             5      G      5.751462E-19   1.471140E-15   3.659680E-01   0.0           -1.628586E+00   1.407725E-15
+             6      G      5.444725E-19   1.421161E-15   5.406461E-01   0.0           -1.853304E+00  -2.548220E-15
+             7      G      4.823808E-19   9.526847E-16   7.345086E-01   0.0           -2.013410E+00  -6.786079E-15
+             8      G      3.732793E-19   8.347948E-17   9.414642E-01   0.0           -2.116714E+00  -1.039892E-14
+             9      G      2.976444E-19  -1.092181E-15   1.156324E+00   0.0           -2.173479E+00  -1.289449E-14
+            10      G      2.713869E-19  -2.456357E-15   1.375054E+00   0.0           -2.196552E+00  -1.414021E-14
+            11      G      2.618706E-19  -3.890387E-15   1.595038E+00   0.0           -2.201436E+00  -1.443126E-14
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    12
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.098805E+04
+          CYCLES =  1.668324E+01         R E A L   E I G E N V E C T O R   N O .          2
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G     -1.493313E-19   2.674816E-02  -8.994344E-17   0.0            1.505621E-15   5.206004E-01
+             3      G     -2.857739E-19   1.017307E-01  -2.492713E-16   0.0            1.431015E-15   9.647492E-01
+             4      G     -3.706505E-19   2.173332E-01  -3.393506E-16   0.0            2.350460E-16   1.333233E+00
+             5      G     -4.063573E-19   3.660736E-01  -2.632712E-16   0.0           -1.966889E-15   1.628005E+00
+             6      G     -4.164611E-19   5.407421E-01   6.014302E-17   0.0           -4.355205E-15   1.852637E+00
+             7      G     -4.166892E-19   7.345823E-01   5.567122E-16   0.0           -5.187528E-15   2.012680E+00
+             8      G     -4.351312E-19   9.415033E-01   1.021105E-15   0.0           -3.687174E-15   2.115941E+00
+             9      G     -4.709336E-19   1.156317E+00   1.251723E-15   0.0           -8.939408E-16   2.172682E+00
+            10      G     -4.760746E-19   1.374987E+00   1.218585E-15   0.0            1.329666E-15   2.195745E+00
+            11      G     -4.948456E-19   1.594897E+00   1.033109E-15   0.0            2.111214E-15   2.200627E+00
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    13
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.054613E+05
+          CYCLES =  5.168526E+01         R E A L   E I G E N V E C T O R   N O .          3
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      3.253057E-20  -2.198816E-16   1.453584E-01   0.0           -2.626278E+00  -4.008116E-15
+             3      G      5.083240E-20  -7.357232E-16   4.727469E-01   0.0           -3.652345E+00  -5.907663E-15
+             4      G      2.833744E-20  -1.337653E-15   8.280856E-01   0.0           -3.223472E+00  -5.767078E-15
+             5      G     -3.843405E-21  -1.838475E-15   1.079732E+00   0.0           -1.645393E+00  -4.005411E-15
+             6      G     -5.635824E-20  -2.110378E-15   1.134168E+00   0.0            6.335027E-01  -1.336423E-15
+             7      G     -7.563809E-20  -2.100624E-15   9.471087E-01   0.0            3.092886E+00   1.496873E-15
+             8      G     -7.593556E-20  -1.823831E-15   5.257193E-01   0.0            5.243598E+00   3.919747E-15
+             9      G     -8.131407E-20  -1.340209E-15  -8.012370E-02   0.0            6.739483E+00   5.589600E-15
+            10      G     -5.801205E-20  -7.322690E-16  -7.972535E-01   0.0            7.475814E+00   6.416094E-15
+            11      G     -6.788464E-20  -7.628697E-17  -1.557129E+00   0.0            7.658799E+00   6.625159E-15
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    14
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  4.207973E+05
+          CYCLES =  1.032420E+02         R E A L   E I G E N V E C T O R   N O .          4
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      4.731072E-22  -1.462130E-01  -1.353637E-17   0.0            2.429589E-16  -2.618491E+00
+             3      G      1.740060E-21  -4.737933E-01  -4.186747E-17   0.0            2.809934E-16  -3.640201E+00
+             4      G     -1.467301E-21  -8.288913E-01  -6.242474E-17   0.0            9.624466E-17  -3.210488E+00
+             5      G     -8.226481E-21  -1.080074E+00  -5.995278E-17   0.0           -1.239658E-16  -1.634759E+00
+             6      G     -2.470743E-20  -1.134014E+00  -4.005636E-17   0.0           -2.702805E-16   6.394402E-01
+             7      G     -4.167542E-20  -9.465795E-01  -7.479160E-18   0.0           -3.683685E-16   3.093030E+00
+             8      G     -5.954874E-20  -5.250460E-01   3.282858E-17   0.0           -4.424192E-16   5.238227E+00
+             9      G     -6.065267E-20   8.064473E-02   8.005824E-17   0.0           -4.876271E-16   6.730017E+00
+            10      G     -5.824514E-20   7.972799E-01   1.293059E-16   0.0           -5.008943E-16   7.464213E+00
+            11      G     -5.790796E-20   1.556243E+00   1.801897E-16   0.0           -5.127176E-16   7.646639E+00
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    15
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  8.094111E+05
+          CYCLES =  1.431874E+02         R E A L   E I G E N V E C T O R   N O .          5
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G     -3.787781E-20   3.195974E-17  -3.542403E-01   0.0            5.821852E+00   5.845239E-16
+             3      G     -7.693233E-20   1.074272E-16  -9.442053E-01   0.0            4.934133E+00   8.657989E-16
+             4      G     -1.059849E-19   1.937864E-16  -1.197757E+00   0.0           -3.209801E-01   7.844523E-16
+             5      G     -1.274344E-19   2.499544E-16  -8.634826E-01   0.0           -6.079749E+00   2.435310E-16
+             6      G     -1.455216E-19   2.303400E-16  -8.728561E-02   0.0           -8.624048E+00  -6.862296E-16
+             7      G     -1.622259E-19   1.070019E-16   6.995726E-01   0.0           -6.238850E+00  -1.798580E-15
+             8      G     -1.660665E-19  -1.286422E-16   1.034971E+00   0.0           -2.862096E-02  -2.887456E-15
+             9      G     -1.648964E-19  -4.627237E-16   6.824513E-01   0.0            6.877821E+00  -3.727860E-15
+            10      G     -1.651323E-19  -8.623600E-16  -2.617829E-01   0.0            1.138253E+01  -4.188975E-15
+            11      G     -1.736375E-19  -1.290150E-15  -1.490346E+00   0.0            1.272670E+01  -4.318320E-15
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    16
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  3.038230E+06
+          CYCLES =  2.774153E+02         R E A L   E I G E N V E C T O R   N O .          6
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      2.138983E-19  -1.062734E-14  -5.939144E-01   0.0            8.491043E+00  -1.701822E-13
+             3      G      4.237429E-19  -2.760413E-14  -1.183445E+00   0.0            1.294576E+00  -1.345525E-13
+             4      G      6.249669E-19  -3.342341E-14  -7.329562E-01   0.0           -9.555054E+00   3.272499E-14
+             5      G      8.133599E-19  -2.076369E-14   4.216567E-01   0.0           -1.108206E+01   2.094557E-13
+             6      G      9.824282E-19   5.111895E-15   1.108382E+00   0.0           -1.178651E+00   2.788113E-13
+             7      G      1.129713E-18   2.997436E-14   6.222549E-01   0.0            9.795402E+00   1.874095E-13
+             8      G      1.246700E-18   3.871783E-14  -5.013202E-01   0.0            1.012211E+01  -2.801002E-14
+             9      G      1.330344E-18   2.373970E-14  -1.025920E+00   0.0           -1.017375E+00  -2.636721E-13
+            10      G      1.380445E-18  -1.142091E-14  -2.609182E-01   0.0           -1.328223E+01  -4.162817E-13
+            11      G      1.397470E-18  -5.616247E-14   1.381548E+00   0.0           -1.795940E+01  -4.615694E-13
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    17
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  3.218351E+06
+          CYCLES =  2.855202E+02         R E A L   E I G E N V E C T O R   N O .          7
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      1.339689E-19   3.572940E-01  -2.469777E-14   0.0            3.552213E-13   5.775208E+00
+             3      G      2.671322E-19   9.465531E-01  -4.998810E-14   0.0            6.875254E-14   4.879508E+00
+             4      G      3.958355E-19   1.197774E+00  -3.338830E-14   0.0           -3.719197E-13  -3.491967E-01
+             5      G      5.190364E-19   8.614607E-01   1.256904E-14   0.0           -4.521684E-13  -6.065949E+00
+             6      G      6.309376E-19   8.473073E-02   4.237171E-14   0.0           -8.523436E-14  -8.578375E+00
+             7      G      7.247556E-19  -7.010438E-01   2.763325E-14   0.0            3.421216E-13  -6.189873E+00
+             8      G      7.973113E-19  -1.034612E+00  -1.341982E-14   0.0            3.844912E-13  -5.547216E-03
+             9      G      8.407105E-19  -6.807863E-01  -3.498498E-14   0.0           -8.324746E-15   6.862437E+00
+            10      G      8.690576E-19   2.631111E-01  -9.805290E-15   0.0           -4.605550E-13   1.133822E+01
+            11      G      8.792853E-19   1.488688E+00   4.804941E-14   0.0           -6.361736E-13   1.267289E+01
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    18
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  8.097901E+06
+          CYCLES =  4.529042E+02         R E A L   E I G E N V E C T O R   N O .          8
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G     -9.262655E-19  -3.250083E-15  -8.280849E-01   0.0            9.555708E+00  -5.180214E-14
+             3      G     -1.831848E-18  -8.496178E-15  -1.063880E+00   0.0           -6.709045E+00  -4.395472E-14
+             4      G     -2.695133E-18  -1.127030E-14   2.406049E-01   0.0           -1.465044E+01  -1.144684E-14
+             5      G     -3.507852E-18  -1.116895E-14   1.105563E+00   0.0            5.889581E-01   8.793435E-15
+             6      G     -4.247704E-18  -1.006896E-14   1.593404E-01   0.0            1.471518E+01   1.120080E-14
+             7      G     -4.881671E-18  -8.949235E-15  -1.051897E+00   0.0            4.900831E+00   1.295400E-14
+             8      G     -5.389614E-18  -7.091615E-15  -5.638036E-01   0.0           -1.274634E+01   2.707523E-14
+             9      G     -5.744700E-18  -3.213071E-15   7.976105E-01   0.0           -9.068186E+00   5.147109E-14
+            10      G     -5.968099E-18   3.087211E-15   6.885291E-01   0.0            1.171584E+01   7.217485E-14
+            11      G     -6.044714E-18   1.080002E-14  -1.226804E+00   0.0            2.278576E+01   7.937984E-14
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    19
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.201579E+07
+          CYCLES =  5.516915E+02         R E A L   E I G E N V E C T O R   N O .          9
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G      7.141477E-18  -6.001338E-01  -4.850484E-15   0.0            5.219945E-14  -8.344647E+00
+             3      G      1.409144E-17  -1.184646E+00  -7.612654E-15   0.0            1.823838E-14  -1.193893E+00
+             4      G      2.069592E-17  -7.280512E-01  -1.049600E-14   0.0            4.516191E-14   9.504033E+00
+             5      G      2.683003E-17   4.268355E-01  -1.323272E-14   0.0           -3.190548E-14   1.094455E+01
+             6      G      3.228217E-17   1.108512E+00  -2.704547E-15   0.0           -1.519538E-13   1.111174E+00
+             7      G      3.692053E-17   6.179572E-01   9.951326E-15   0.0           -5.237600E-14  -9.717704E+00
+             8      G      4.064852E-17  -5.049190E-01   5.548497E-15   0.0            1.149226E-13  -9.984209E+00
+             9      G      4.332793E-17  -1.025124E+00  -6.591069E-15   0.0            8.589602E-14   1.068394E+00
+            10      G      4.497932E-17  -2.576054E-01  -8.450210E-15   0.0           -4.005696E-14   1.319721E+01
+            11      G      4.553639E-17   1.379573E+00  -1.059337E-15   0.0           -9.044179E-14   1.781500E+01
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    20
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.752376E+07
+          CYCLES =  6.662447E+02         R E A L   E I G E N V E C T O R   N O .         10
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      0.0            0.0            0.0            0.0            0.0            0.0
+             2      G     -5.354269E-18   8.037165E-17   1.024889E+00   0.0           -8.174490E+00   5.185260E-15
+             3      G     -1.058352E-17   1.095621E-15   5.954040E-01   0.0            1.532979E+01   1.224452E-14
+             4      G     -1.572982E-17   1.718898E-15  -1.004209E+00   0.0            7.235583E+00  -6.625519E-15
+             5      G     -2.075317E-17  -1.110633E-15  -3.387232E-01   0.0           -1.649207E+01  -5.368933E-14
+             6      G     -2.540199E-17  -8.878161E-15   1.086272E+00   0.0           -3.407730E+00  -9.624781E-14
+             7      G     -2.948169E-17  -1.856798E-14   9.284815E-02   0.0            1.729462E+01  -8.146149E-14
+             8      G     -3.292391E-17  -2.247144E-14  -1.111621E+00   0.0           -4.331535E-01   1.968420E-14
+             9      G     -3.543548E-17  -1.318573E-14   1.349855E-01   0.0           -1.680495E+01   1.670779E-13
+            10      G     -3.706745E-17   9.839833E-15   9.533472E-01   0.0            6.319739E+00   2.791377E-13
+            11      G     -3.765524E-17   4.029486E-14  -1.030322E+00   0.0            2.643832E+01   3.161032E-13
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    21
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  2.748000E+03
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -1.032888E-10  -3.586480E-10  -2.682326E+03   0.0            1.956847E+03  -7.150583E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    22
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.098805E+04
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      6.271915E-11  -1.072615E+04   5.971965E-11   0.0           -8.255656E-12  -7.824712E+03
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    23
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.054613E+05
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -1.366284E-11   2.908908E-10  -5.720310E+04   0.0            1.205213E+04   7.065815E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    24
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  4.207973E+05
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -1.987050E-13   2.283482E+05   5.655048E-12   0.0           -1.133108E-12   4.807627E+04
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    25
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  8.094111E+05
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      1.590868E-11  -4.082828E-11   2.571996E+05   0.0           -3.323646E+04  -1.022475E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    26
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  3.038230E+06
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -8.983731E-11   3.163789E-08   6.898098E+05   0.0           -6.420914E+04   3.964446E-09
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    27
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  3.218351E+06
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -5.626693E-11  -1.023619E+06   2.825308E-08   0.0           -2.655928E-09  -1.320338E+05
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    28
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  8.097901E+06
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      3.890315E-10   9.857423E-09   1.426764E+06   0.0           -1.047832E+05   1.218101E-09
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    29
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.201579E+07
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G     -2.999420E-09   2.731820E+06   9.125570E-09   0.0           -6.389766E-10   2.534161E+05
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    30
+     DEFAULT                                                                                                                        
+0                                                                                                            SUBCASE 1              
+      EIGENVALUE =  1.752376E+07
+                               F O R C E S   O F   S I N G L E - P O I N T   C O N S T R A I N T
+ 
+      POINT ID.   TYPE          T1             T2             T3             R1             R2             R3
+             1      G      2.248793E-09   2.671926E-09  -2.509630E+06   0.0            1.540922E+05   6.100267E-11
+1    MSC.NASTRAN JOB CREATED ON 15-MAR-26 AT 16:39:49                         MARCH  17, 2026  MSC Nastran 11/14/17   PAGE    31
+                                                                                                                                    
+0                                                                                                            SUBCASE 1              
+ * * * *  D B D I C T   P R I N T  * * * *      SUBDMAP = PRTSUM  ,  DMAP STATEMENT NO.     71
+
+
+
+0                                   * * * *  A N A L Y S I S  S U M M A R Y  T A B L E  * * * *
+0 SEID  PEID PROJ VERS APRCH      SEMG SEMR SEKR SELG SELR MODES DYNRED SOLLIN PVALID SOLNL LOOPID DESIGN CYCLE SENSITIVITY
+ --------------------------------------------------------------------------------------------------------------------------
+     0     0    1    1 '        '    T    T    T    T    T     T      F      T      0     F     -1            0           F
+0SEID = SUPERELEMENT ID.
+ PEID = PRIMARY SUPERELEMENT ID OF IMAGE SUPERELEMENT.
+ PROJ = PROJECT ID NUMBER.
+ VERS = VERSION ID.
+ APRCH = BLANK FOR STRUCTURAL ANALYSIS.  HEAT FOR HEAT TRANSFER ANALYSIS.
+ SEMG = STIFFNESS AND MASS MATRIX GENERATION STEP.
+ SEMR = MASS MATRIX REDUCTION STEP (INCLUDES EIGENVALUE SOLUTION FOR MODES).
+ SEKR = STIFFNESS MATRIX REDUCTION STEP.
+ SELG = LOAD MATRIX GENERATION STEP.
+ SELR = LOAD MATRIX REDUCTION STEP. 
+ MODES = T (TRUE) IF NORMAL MODES OR BUCKLING MODES CALCULATED.
+ DYNRED = T (TRUE) MEANS GENERALIZED DYNAMIC AND/OR COMPONENT MODE REDUCTION PERFORMED.
+ SOLLIN = T (TRUE) IF LINEAR SOLUTION EXISTS IN DATABASE.
+ PVALID = P-DISTRIBUTION ID OF P-VALUE FOR P-ELEMENTS
+ LOOPID = THE LAST LOOPID VALUE USED IN THE NONLINEAR ANALYSIS.  USEFUL FOR RESTARTS.
+ SOLNL = T (TRUE) IF NONLINEAR SOLUTION EXISTS IN DATABASE.
+ DESIGN CYCLE = THE LAST DESIGN CYCLE (ONLY VALID IN OPTIMIZATION).
+ SENSITIVITY = SENSITIVITY MATRIX GENERATION FLAG.
+ 
+ No PARAM values were set in the Control File.
+ 
+1                                        * * * END OF JOB * * *
+ 
+ 
+ No Symbolic Replacement variables or values were specified.
+

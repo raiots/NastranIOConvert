@@ -1,0 +1,68 @@
+$ MSC.Nastran input file created on March     17, 2026 at 12:23:18 by
+$ Patran 2018
+$ Direct Text Input for Nastran System Cell Section
+$ Direct Text Input for File Management Section
+$ Direct Text Input for Executive Control
+$ Normal Modes Analysis, Database
+SOL 103
+CEND
+$ Direct Text Input for Global Case Control Data
+TITLE = MSC.Nastran job created on 15-Mar-26 at 16:39:49
+ECHO = NONE
+$ Using Nastran default values for RESVEC
+SUBCASE 1
+   SUBTITLE=Default
+   METHOD = 1
+   SPC = 2
+   VECTOR(SORT1,REAL)=ALL
+   SPCFORCES(SORT1,REAL)=ALL
+$ Direct Text Input for this Subcase
+BEGIN BULK
+$ Direct Text Input for Bulk Data
+PARAM    POST    0
+PARAM   PRTMAXIM YES
+EIGRL    1                       10      0                       MASS
+$ Elements and Element Properties for region : beam_prop
+PBARL    1       1               BAR
+        .02     .01
+$ Pset: "beam_prop" will be imported as: "pbarl.1"
+CBAR     10      1       1       2       0.      0.     1.
+CBAR     11      1       2       3       0.      0.     1.
+CBAR     12      1       3       4       0.      0.     1.
+CBAR     13      1       4       5       0.      0.     1.
+CBAR     14      1       5       6       0.      0.     1.
+CBAR     15      1       6       7       0.      0.     1.
+CBAR     16      1       7       8       0.      0.     1.
+CBAR     17      1       8       9       0.      0.     1.
+CBAR     18      1       9       10      0.      0.     1.
+CBAR     19      1       10      11      0.      0.     1.
+$ Referenced Material Records
+$ Material Record : steel
+$ Description of Material : Date: 15-Mar-26           Time: 16:04:43
+MAT1     1      2.1+11          .3      7800.
+$ Nodes of the Entire Model
+GRID     1               0.      0.      0.
+GRID*    2                              .100000001490116 0.
+*        0.
+GRID*    3                              .200000002980232 0.
+*        0.
+GRID*    4                              .300000011920929 0.
+*        0.
+GRID*    5                              .400000005960465 0.
+*        0.
+GRID     6              .5       0.      0.
+GRID*    7                              .600000023841858 0.
+*        0.
+GRID*    8                              .699999988079071 0.
+*        0.
+GRID*    9                              .800000011920929 0.
+*        0.
+GRID*    10                             .899999976158142 0.
+*        0.
+GRID     11             1.       0.      0.
+$ Loads for Load Case : Default
+SPCADD   2       1
+$ Displacement Constraints of Load Set : fixed_end
+SPC1     1       123456  1
+$ Referenced Coordinate Frames
+ENDDATA 7315037d

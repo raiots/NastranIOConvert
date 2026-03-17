@@ -52,7 +52,7 @@ def parse_f06_displacements(text: str) -> pd.DataFrame:
     in_disp_block = False
     mode_idx = 1
 
-    mode_pat = re.compile(r"EIGENVALUE\s*=\s*([\dE+\-.]+)", re.IGNORECASE)
+    mode_pat = re.compile(r"^\s*EIGENVALUE\s*=\s*([\dE+\-.]+)", re.IGNORECASE)
     disp_pat = re.compile(
         r"^\s*(\d+)\s+G\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+"
         r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)\s+"
@@ -60,13 +60,18 @@ def parse_f06_displacements(text: str) -> pd.DataFrame:
         r"([-+]?\d*\.?\d+(?:[EDed][-+]?\d+)?)"
     )
 
+    block_markers = [
+        "D I S P L A C E M E N T   V E C T O R",
+        "R E A L   E I G E N V E C T O R",
+    ]
+
     for line in text.splitlines():
         if mode_pat.search(line):
             mode = f"Mode{mode_idx}"
             mode_idx += 1
             continue
 
-        if "D I S P L A C E M E N T   V E C T O R" in line:
+        if any(marker in line for marker in block_markers):
             in_disp_block = True
             continue
 
